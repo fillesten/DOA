@@ -18,7 +18,7 @@ struct Node {
 
 };
 
-Node* BuildBalancedBST(std::vector<int> &vec, int start, int end);
+Node* BuildBalancedBST(std::vector<int> &primeVec, int start, int end);
 
 Node* BSTSearch(Node* nodePtr, int targetInt);
 

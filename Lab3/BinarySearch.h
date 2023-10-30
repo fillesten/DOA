@@ -7,7 +7,7 @@
 
 #include <vector>
 
-int BinarySearch(std::vector<int> &vec, int targetInt);
+int BinarySearch(std::vector<int> &primeVec, int targetInt);
 
 
 #endif //LABORATION_3_BINARYSEARCH_H

@@ -28,3 +28,20 @@ std::vector<int> GeneratePrimes(int N) {
     return primeVec;
 }
 
+//Sieve of Eratosthenes
+std::vector<int> SieveOfEratosthenes(int N) {
+    std::vector<bool> prime(N + 1, true);
+    for (int p = 2; p * p <= N; p++) {
+        if (prime[p]) {
+            for (int i = p * p; i <= N; i += p)
+                prime[i] = false;
+        }
+    }
+    std::vector<int> vec;
+    for (int p = 2; p <= N; p++)
+        if (prime[p])
+            vec.push_back(p);
+
+    return vec;
+}
+

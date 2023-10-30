@@ -28,9 +28,10 @@ void HashTable::Insert(int data) {
 
 //hittar en bucket å sen kollar varje värde, om inte hittar gå djupare i bucketen.
 //ex med primes till 30; bucket 7 håller value = 17 och value = 7
-int HashTable::Search(int targetData) const {
+int HashTable::Search(int targetData) {
     int hashValue = Hash(targetData);
     HashNode* current = hashtable[hashValue];
+
     while (current != nullptr) {
         if (current->value == targetData) {
             return current->value;
@@ -39,4 +40,7 @@ int HashTable::Search(int targetData) const {
     }
     return false; //false defaults to 0
 }
+
+
+
 

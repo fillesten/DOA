@@ -30,7 +30,7 @@ public:
         // Lägg till ett element i hashtabellen.
     void Insert(int data);
 
-    int Search(int targetData) const;
+    int Search(int targetData);
 };
 
 

@@ -2,13 +2,81 @@
 // Created by margi on 2023-10-06.
 //
 
-#include <algorithm>
 #include <functional>
 #include <valarray>
 #include <chrono>
 #include "TimeMeasure.h"
 
-void TimeAllAlgorithms(std::vector<int> &vec, std::vector<std::string> fileNameList) {
+
+void TimeCalculation(void (*searchFunk)(std::vector<int>&searchVec, int targetInt), std::vector<int> &vec, std::string fileName){
+
+    int samples = 50;
+    double squareTime = 0;
+    double totalTime = 0;
+    double standardDeviation;
+    double diffTime;
+    double averageTime;
+    std::string searchMethod = fileName.substr(0, fileName.size()-4);
+
+    std::cout << searchMethod<< std::endl;
+    for (int i = 0; i < samples; i++) {
+        auto currentTime = SearchingTime(searchFunk, vec, searchMethod);
+        totalTime += currentTime;
+        squareTime += pow(currentTime, 2);
+//        std::cout << "Sample " << i << ": " << currentTime << "ms" << std::endl;
+
+    }
+    averageTime = totalTime / samples;
+    diffTime = pow(totalTime, 2) / samples;
+    standardDeviation = sqrt((squareTime - diffTime) / (samples - 1));
+
+    //output is N: vector size, T[ms] the average time in milliseconds, Stdev[ms]: standarddeviation in milliseconds   Samples: the amount of samples used for calculating the previous two
+    std::string output = std::to_string(vec.size()) + "\t" + std::to_string(averageTime) + "\t" + std::to_string(standardDeviation) + "\t" + std::to_string(samples) + "\n";
+
+//    std::cout << std::setiosflags(std::ios_base::fixed);
+    std::cout<<averageTime <<std::endl;
+
+    WriteFile(fileName, output);
+}
+
+double SearchingTime(void (*searchFunk)(std::vector<int>&searchVec, int targetInt), std::vector<int> &vec, std::string searchMethod){
+
+    std::chrono::duration<double, std::milli> timeTaken(0);
+    int targetInt = rand() % vec.size();
+
+
+    if (searchMethod == "BinarySearchTree") {
+        Node* root = BuildBalancedBST(vec, 0, vec.size() - 1);
+
+        auto startTime = std::chrono::steady_clock::now();
+        BSTSearch(root, vec[targetInt]);
+        auto endTime = std::chrono::steady_clock::now();
+
+        timeTaken += (endTime-startTime);
+    }
+    else if (searchMethod == "HashTable") {
+
+
+        HashTable hashTable(vec, vec.size());
+
+
+        auto startTime = std::chrono::steady_clock::now();
+        hashTable.Search(vec[targetInt]);
+        auto endTime = std::chrono::steady_clock::now();
+
+        timeTaken += (endTime-startTime);
+    }
+    else {
+        auto startTime = std::chrono::steady_clock::now();
+        searchFunk(vec,  vec[targetInt]);
+        auto endTime = std::chrono::steady_clock::now();
+        timeTaken += (endTime-startTime);
+    }
+    return timeTaken.count();
+}
+
+//  <<<<<<<<<<<<<<<< LAMBDA EXPERIMENTING >>>>>>>>>>>>>>>>
+void LambdaExperimentation(std::vector<int> &vec, std::vector<std::string> fileNameList) {
 
     //more experimenting with lambda functions and std::function:
     /*
@@ -37,50 +105,13 @@ void TimeAllAlgorithms(std::vector<int> &vec, std::vector<std::string> fileNameL
 //    };
 
 //    auto sortmeths = {linearSearch1, binarySearch1, BSTSearch};
-//    std::vector<void (*)(std::vector<int>&searchVec, int targetInt)> sortingMethods =
-//            { linearSearch, binarySearch };
 
-
-
+//    auto binarySearch = [](std::vector<int> &primeVec, int targetInt)  { BinarySearch(primeVec, targetInt); };
+//    auto bstSearch = [](std::vector<int> &primeVec, int targetInt) { BSTSearch(BuildBalancedBST(primeVec, 0, primeVec.size() - 1), targetInt); };
+//    auto hashtable  = [](std::vector<int> &primeVec , int targetInt) { HashTable hashTable(primeVec, primeVec.size()); hashTable.Search(targetInt); };
+//    auto linearSearch = [](std::vector<int> &primeVec, int targetInt) { LinearSearch(primeVec, targetInt); };
+//    std::vector<void (*)(std::vector<int>&searchVec, int targetInt)> sortingMethods = { binarySearch, bstSearch, hashtable, linearSearch };
+//    std::vector<void (*)(std::vector<int>&searchVec, int targetInt)> sortingMethods = { binarySearch, bstSearch, hashtable, linearSearch };
 
 }
 
-void TimeCalculation(void (*searchFunk)(std::vector<int>&searchVec), std::vector<int> &vec, std::string fileName){
-
-    //CHANGE BACK TO 5
-    int samples = 10;
-    double squareTime = 0;
-    double totalTime = 0;
-    double standardDeviation;
-    double diffTime;
-    double averageTime;
-
-
-    for (int i = 0; i < samples; i++) {
-//        PrintVector(vec, "Before the 'sortFunk'");
-        auto currentTime = SortingTime(searchFunk, vec);
-//        PrintVector(vec, "After the 'sortFunk'");
-//        std::cout<<std::endl;
-//        std::cout<<std::endl;
-        totalTime += currentTime;
-        squareTime += pow(currentTime, 2);
-    }
-    averageTime = totalTime / samples;
-
-    diffTime = pow(totalTime, 2) / samples;
-    standardDeviation = sqrt((squareTime - diffTime) / (samples - 1));
-
-
-    //output is N: vector size, T[ms] the average time in milliseconds, Stdev[ms]: standarddeviation in milliseconds   Samples: the amount of samples used for calculating the previous two
-    std::string output = std::to_string(vec.size()) + "\t" + std::to_string(averageTime) + "\t" + std::to_string(standardDeviation) + "\t" + std::to_string(samples) + "\n";
-    std::cout<<averageTime<<std::endl;
-    WriteFile(fileName, output);
-}
-
-double SortingTime(void (*searchFunk)(std::vector<int>&searchVec), std::vector<int> vec){
-    auto startTime = std::chrono::steady_clock::now();
-    searchFunk(vec);
-    auto endTime = std::chrono::steady_clock::now();
-    std::chrono::duration<double, std::milli> timeTaken = (endTime - startTime);
-    return timeTaken.count();
-}

@@ -7,5 +7,7 @@
 #include <vector>
 
 std::vector<int> GeneratePrimes(int N);
+std::vector<int> SieveOfEratosthenes(int N);
+
 
 #endif //LABORATION_3_GENERATION_H

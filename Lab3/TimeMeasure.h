@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <iomanip>
 
 #include "BinarySearch.h"
 #include "BinarySearchTree.h"
@@ -16,13 +17,10 @@
 #include "HashTable.h"
 #include "LinearSearch.h"
 
+void TimeCalculation(void (*searchFunk)(std::vector<int>&searchVec, int targetInt), std::vector<int> &vec, std::string fileName);
 
+double SearchingTime(void (*searchFunk)(std::vector<int>&searchVec, int targetInt), std::vector<int> &vec, std::string searchMethod);
 
-void TimeAllAlgorithms(std::vector<int>& vec, std::vector<std::string> fileNameList);
-
-void TimeCalculation(void (*searchFunk)(std::vector<int>&searchVec), std::vector<int> &vec, std::string fileName);
-
-double SortingTime(void (*searcFunk)(std::vector<int>&searchVec), std::vector<int> vec);
-
+void LambdaExperimentation(std::vector<int>& vec, std::vector<std::string> fileNameList);
 
 #endif //LABORATION_3_TIMEMEASURE_H
