@@ -1,5 +1,5 @@
 #include <iostream>
-#include <list>
+#include <chrono>
 #include "BinarySearch.h"
 #include "BinarySearchTree.h"
 #include "FileManager.h"
@@ -9,114 +9,50 @@
 #include "TimeMeasure.h"
 
 
+
+
 int main() {
+    std::cout << std::setiosflags(std::ios_base::fixed);;
 
-    int start = 20000;
-    int increment = 20000;
-    int end = 200000;
-
-    std::vector<std::string> fileNamesVec = { "BinarySearch.txt", "BinarySearchTree.txt", "HashTable.txt", "LinearSearch.txt" };
-    ClearFiles(fileNamesVec);
-
-    auto linearSearch = [](std::vector<int> &searchVec, int targetInt) { LinearSearch(searchVec, targetInt); };
-    auto binarySearch = [](std::vector<int> &searchVec, int targetInt) { BinarySearch(searchVec, targetInt); };
-    auto bstSearch = [](std::vector<int> &searchVec, int targetInt) { BSTSearch(BuildBalancedBST(searchVec, 0, searchVec.size() - 1), targetInt); };
-    auto hashtable  = [](std::vector<int> &searchVec ,int targetInt) { HashTable hashTable(searchVec, searchVec.size()); hashTable.Search(targetInt); };
-
-
+    int start = 10000;
+    int increment = 10000;
+    int end = 100000;
 
     std::vector<std::vector<int>> primeVectors;
     for (int vectorSize = start; vectorSize <= end; vectorSize+= increment) {
         std::vector<int> primeVec = GeneratePrimes(vectorSize);
         primeVectors.push_back(primeVec);
+        std::cout<<"done"<<std::endl;
     }
 
-//    for (std::vector<int> primeVec : primeVectors) {
-//    }
-
-    std::vector<int> primeVec = GeneratePrimes(30);
-    std::cout<<primeVec.size()<<std::endl;
-    for (int i: primeVec) { std::cout<<i<<", "; } std::cout<<std::endl;
+    std::vector<std::string> fileNamesVec = { "BinarySearch.txt", "BinarySearchTree.txt", "HashTable.txt", "LinearSearch.txt" };
+    ClearFiles(fileNamesVec);
 
 
-//   HashTable hashTable(primeVec, primeVec.size());
-//
-//
-//
-    // BST
-    for (std::vector<int> primeVec : primeVectors) {
-        Node* rootBST = BuildBalancedBST(primeVec, 0, primeVec.size() - 1);
-        TimeCalculation(bstSearch, fileNamesVec[1]);
-        BSTSearch(rootBST, 7);
+    auto binarySearch = [](std::vector<int> &primeVec, int targetInt)  { BinarySearch(primeVec, targetInt); };
+    auto bstSearch = [](std::vector<int> &primeVec, int targetInt) { BSTSearch(BuildBalancedBST(primeVec, 0, primeVec.size() - 1), targetInt); };
+    auto hashtable  = [](std::vector<int> &primeVec , int targetInt) { HashTable hashTable(primeVec, primeVec.size()); hashTable.Search(targetInt); };
+    auto linearSearch = [](std::vector<int> &primeVec, int targetInt) { LinearSearch(primeVec, targetInt); };
+
+
+
+    for (auto primeVector : primeVectors) {
+
+//      Binary Search
+        TimeCalculation(binarySearch, primeVector, fileNamesVec[0]);
+
+//      BST Search
+        TimeCalculation(bstSearch, primeVector, fileNamesVec[1]);
+
+//      Hash Search
+        TimeCalculation(hashtable, primeVector, fileNamesVec[2]);
+
+//      Linear Search
+        TimeCalculation(linearSearch, primeVector, fileNamesVec[3]);
+        std::cout<<std::endl;
+
     }
-
-//
-//
-//    int linearPos = LinearSearch(primeVec, 11);
-//    std::cout<<"the prime "<<primeVec[linearPos] <<" is found at position "<<linearPos<< std::endl;
-//
-//
-//    int binaryPos = BinarySearch(primeVec, 13);
-//    std::cout<<"the prime "<<primeVec[binaryPos] <<" is found at position "<<binaryPos<< std::endl;
-//
-
-//    Node* root = BuildBalancedBST(primeVec, 0, primeVec.size() - 1);
-//    Node* BSTPos = BSTSearch(root, 17);
-//    std::cout<<"the prime "<<BSTPos->value<<" is found using " << std::endl;
-//    std::cout<<"root contains "<<root->value<<std::endl;
-//    Inorder(root); std::cout << std::endl;
-
-
-    //hashtable size ska göras på en subset av alla primes.
-    //så skapa en vector från primeVec och ta från
-    // primeVec.begin() tills primVec.begin() + dataSerieSize
-//    int reserved_size = primeVec.size()* 2; // Justera storleken efter behov.
-//    HashTable hashtable(reserved_size, primeVec);
-
-
-
-//    std::cout << "BSTSearch result: "<<std::endl;
-//    std::cout << "Does 7 exist? ";
-//    if (hashtable.Search(7)) std::cout << "true" << std::endl;
-//    else std::cout<<"false"<<std::endl;
-//
-//    std::cout << "Does 8 exist? ";
-//    if (hashtable.Search(8)) std::cout << "true" << std::endl;
-//    else std::cout<<"false"<<std::endl;
-
-
-
-
-    /*HashTable h(primeVec.size());
-
-    int key[] = {231, 321, 212, 321, 433, 262};
-    int data[] = {123, 432, 523, 43, 423, 111};
-
-    for (int i = 0; i < primeVec.size(); i++)
-        h.insertItem(key[i], data[i]);
-    int debugstop;
-
-    h.displayHash();
-    h.deleteItem(12);
-    h.displayHash();*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     int debuggstop = 1;
-
     return 0;
 }
